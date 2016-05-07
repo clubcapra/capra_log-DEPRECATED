@@ -476,9 +476,10 @@ public class FileSaver
 				int numFields = _model.getRowCount();
 				boolean firstField = true;
 				// Write header row if required
-				/*if (_headerRowCheckbox.isSelected())
+				if (_headerRowCheckbox.isSelected())
 				{
 					buffer = new StringBuffer();
+					/*
 					for (int f=0; f<numFields; f++)
 					{
 						info = _model.getFieldInfo(f);
@@ -493,8 +494,17 @@ public class FileSaver
 						}
 					}
 					writer.write(buffer.toString());
+					writer.write(lineSeparator);*/
+					
+					buffer.append("<run>\n\t"
+									+ "<onStart>\n\t"
+									+ "</onStart>\n\t"
+									+ "<onLastGoalReached>\n\t"
+									+ "</onLastGoalReached>");
+					
+					writer.write(buffer.toString());
 					writer.write(lineSeparator);
-				}*/
+				}
 
 				// Examine selection
 				int selStart = -1, selEnd = -1;
@@ -519,7 +529,7 @@ public class FileSaver
 					firstField = true;
 					buffer = new StringBuffer();
 					
-					buffer.append("<goal ");
+					buffer.append("\t<goal ");
 					for (int f=0; f<numFields; f++)
 					{
 						info = _model.getFieldInfo(f);
@@ -546,6 +556,10 @@ public class FileSaver
 				UpdateMessageBroker.informSubscribers(I18nManager.getText("confirm.save.ok1")
 					 + " " + numSaved + " " + I18nManager.getText("confirm.save.ok2")
 					 + " " + saveFile.getAbsolutePath());
+				
+				buffer.append("\n</run>");
+				writer.write(buffer.toString());
+				writer.write(lineSeparator);
 				_app.informDataSaved();
 			}
 			catch (IOException ioe)
@@ -623,7 +637,7 @@ public class FileSaver
 			if (value != null)
 			{
 				inBuffer.append("priority=\"" + value + "\"");
-				inBuffer.append(" type=\"gps\">");
+				inBuffer.append(" type=\"gps\">\n\t</goal>");
 			}
 		}
 	}
